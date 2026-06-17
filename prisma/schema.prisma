@@ -1,0 +1,219 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// 1. Your 4 Strict Roles
+enum Role {
+  USER
+  VENDOR
+  ADMIN
+  SUPER_ADMIN
+}
+
+// 2. The Global User Model
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String?   
+  fullName      String?
+  phone         String?
+  image         String?
+  role          Role      @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // A user can "favorite" many vendors
+  favourites    Favourite[]
+  // A user can "shortlist" many vendors
+  shortlists    Shortlist[]
+  // A user can book appointments with many vendors
+  appointments  Appointment[]
+  // A user can add vendors to their compare list
+  compareList   Compare[]
+  // A user account can manage one vendor profile
+  vendorProfile Vendor?   @relation("UserVendorProfile")
+  // A user can have many personal events
+  events        UserEvent[]
+}
+
+model PasswordResetOtp {
+  id        String   @id @default(cuid())
+  email     String
+  otp       String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([email])
+}
+
+// 3. The Core Vendor Directory Listing
+model Vendor {
+  id          String   @id @default(cuid())
+  userId      String?  @unique // Links to the User managing this
+  slug        String   @unique // e.g., "anjali-bridal-studio"
+  name        String
+  category    String   @default("other")
+  description String   @default("")
+  city        String
+  state       String
+  serviceCounty String?
+  price       Float    @default(0)
+  experience  Int      @default(0)
+  profilePic  String?
+  coverImage  String?
+  
+  // Flattened Portfolio Fields
+  signatureStyle  String?
+  brandsUsed      String?
+  serviceCities   String?
+  serviceCountries String?
+  idealBooking    String?
+  portfolioImages String[]
+  clientsCount    Int      @default(0)
+  communitiesCount Int     @default(0)
+  citiesCount     Int      @default(0)
+  countriesCount  Int      @default(0)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relationships
+  user          User?    @relation("UserVendorProfile", fields: [userId], references: [id])
+  favoritedBy   Favourite[]
+  shortlistedBy Shortlist[]
+  appointments  Appointment[]
+  comparedBy    Compare[]
+  portfolio   Portfolio?
+}
+
+// 4. The Deep Portfolio Data
+model Portfolio {
+  id             String   @id @default(cuid())
+  vendorId       String   @unique
+  experience     String   
+  clients        String   
+  communities    String
+  cities         String
+  priceRange     String
+  bookingBefore  String
+  signatureStyle String?
+  brandsUsed     String[] // Postgres natively supports arrays!
+  gallery        String[] 
+
+  // Links back to the core Vendor
+  vendor         Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+}
+
+// 5. User Event Planner
+model UserEvent {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String   // e.g., "Haldi Ceremony"
+  date      DateTime
+  time      String?  // e.g., "6:00 PM"
+  venue     String
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// 6. User Favourites
+model Favourite {
+  id        String   @id @default(cuid())
+  userId    String
+  vendorId  String
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vendor    Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, vendorId]) // Prevents duplicate favourites
+}
+
+// 7. User Shortlists
+model Shortlist {
+  id        String   @id @default(cuid())
+  userId    String
+  vendorId  String
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vendor    Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, vendorId]) // Prevents duplicate shortlists
+}
+
+// 8. Appointments
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+model Appointment {
+  id        String            @id @default(cuid())
+  userId    String
+  vendorId  String
+  date      DateTime
+  time      String
+  message   String?
+  status    AppointmentStatus @default(PENDING)
+  createdAt DateTime          @default(now())
+
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vendor    Vendor @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+}
+
+// 9. User Compare List
+model Compare {
+  id        String   @id @default(cuid())
+  userId    String
+  vendorId  String
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vendor    Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, vendorId]) // Prevents duplicate compare entries
+}
+
+// --- GLOBAL SYSTEM SETTINGS ---
+model SystemSettings {
+  id              String   @id @default(cuid())
+  maintenanceMode Boolean  @default(false)
+  commissionRate  Float    @default(10.0) // Percentage
+  seoTitle        String?
+  seoDescription  String?
+  updatedAt       DateTime @updatedAt
+}
+
+// --- VENDOR CATEGORIES ---
+model Category {
+  id          String        @id @default(cuid())
+  name        String        @unique
+  slug        String        @unique
+  isVisible   Boolean       @default(true) // true = Public, false = Hidden from users but visible to vendors
+  services    ServiceType[] // Relation to Sub-Categories
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+// --- VENDOR SUB-CATEGORIES (SERVICE TYPES) ---
+model ServiceType {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  isVisible   Boolean  @default(true)
+  
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([name, categoryId]) // Prevent duplicate sub-categories in the same parent
+}

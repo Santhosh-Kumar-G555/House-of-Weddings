@@ -1,0 +1,80 @@
+| Category                          | Type (Sub-category)                   |
+| --------------------------------- | ------------------------------------- |
+| bridal and groom wear             | bridal lehengas                       |
+| bridal and groom wear             | sherwanis                             |
+| bridal and groom wear             | kanjeevaram / silk sarees             |
+| bridal and groom wear             | wedding gowns                         |
+| bridal and groom wear             | trousseau sarees                      |
+| bridal and groom wear             | anarkalis and cocktail gowns          |
+| bridal and groom wear             | sherwani on rent                      |
+| bridal and groom wear             | bridal lehenga on rent                |
+| bridal and groom wear             | wedding suits / tuxedos               |
+| bridal and groom wear             | tailoring and custom designers        |
+| bridal and groom wear             | kurta pyjama                          |
+| beauty makeup and mehendi         | bridal makeup artists                 |
+| beauty makeup and mehendi         | airbrush and hd makeup artists        |
+| beauty makeup and mehendi         | party makeup artists                  |
+| beauty makeup and mehendi         | family/guest makeup artists           |
+| beauty makeup and mehendi         | mehendi artists                       |
+| jewellery and accessories         | imitation jewellery                   |
+| jewellery and accessories         | bridal jewellery on rent              |
+| jewellery and accessories         | accessories                           |
+| jewellery and accessories         | bridal jewellery                      |
+| jewellery and accessories         | flower jewellery                      |
+| jewellery and accessories         | groom jewellery                       |
+| photography and videography       | wedding photographers                 |
+| photography and videography       | pre-wedding shoot photographers       |
+| photography and videography       | traditional videographers             |
+| photography and videography       | cinematic videographers               |
+| photography and videography       | traditional photographers             |
+| photography and videography       | candid photographers                  |
+| decoration and decor              | balloon decorators                    |
+| decoration and decor              | varmala concepts and stages           |
+| decoration and decor              | fireworks and special effects         |
+| decoration and decor              | flower decorators / florists          |
+| decoration and decor              | small functions and home decorators   |
+| decoration and decor              | wedding decorators                    |
+| decoration and decor              | photo booths                          |
+| decoration and decor              | lighting and mandap decorators        |
+| catering and food                 | wedding cakes and desserts            |
+| catering and food                 | chaat and food stalls                 |
+| catering and food                 | wedding caterers                      |
+| catering and food                 | bartender and bar services            |
+| music and entertainment           | dance performers / troupes            |
+| music and entertainment           | musicians and soloists                |
+| music and entertainment           | live bands / wedding baaja            |
+| music and entertainment           | sangeet choreographers                |
+| music and entertainment           | ghodiwala / baaraat entertainment     |
+| music and entertainment           | djs                                   |
+| music and entertainment           | anchor / emcee / hosts                |
+| invitations and gifting           | trousseau packing                     |
+| invitations and gifting           | wedding gifts                         |
+| invitations and gifting           | wedding favors and return gifts       |
+| invitations and gifting           | mehendi and sangeet favors            |
+| invitations and gifting           | e-invites                             |
+| invitations and gifting           | physical invitation cards             |
+| venues and locations              | pre-wedding shoot locations           |
+| venues and locations              | reception venues                      |
+| venues and locations              | wedding venues                        |
+| wedding planners and coordination | wedding planners                      |
+| wedding planners and coordination | day-of coordinators                   |
+| wedding planners and coordination | virtual wedding planning              |
+| transportation and logistics      | bodyguards / security                 |
+| transportation and logistics      | luxury and vintage cars               |
+| transportation and logistics      | guest transportation                  |
+| transportation and logistics      | wedding car rentals                   |
+| bridal grooming and wellness      | dermatologists                        |
+| bridal grooming and wellness      | bridal salons / beauty services       |
+| bridal grooming and wellness      | dentists                              |
+| bridal grooming and wellness      | dietitians and nutritionists          |
+| bridal grooming and wellness      | fitness coaches                       |
+| bridal grooming and wellness      | hair transplant                       |
+| pandiths and rituals              | officiants and pre-marital counseling |
+| pandiths and rituals              | astrologers                           |
+| pandiths and rituals              | wedding pandits / priests             |
+| honeymoon and travel              | travel agents                         |
+| honeymoon and travel              | honeymoon planners                    |
+| rentals and experiences           | unique experiences                    |
+| rentals and experiences           | wedding rentals                       |
+| rentals and experiences           | furniture and prop rentals            |
+| others                            | background verification services      |
