@@ -12,14 +12,11 @@ export async function middleware(req: NextRequest) {
   const isAdminRoute = req.nextUrl.pathname.startsWith('/admin');
 
   // If a user tries to access /admin but isn't an ADMIN or SUPER_ADMIN, kick them to the homepage
-  if (isAdminRoute) {
-    if (!token || (role !== 'ADMIN' && role !== 'SUPER_ADMIN')) {
-      // THE FIX: Do not redirect to '/'. Rewrite the URL internally to a broken path to force the 404 page.
-      // This keeps '/admin/...' in the user's browser URL bar, completing the illusion.
-      // Redirect unauthenticated or unauthorized users to the login page
-      return NextResponse.redirect(new URL('/login?error=AccessDenied', req.url));
-    }
-  }
+  // if (isAdminRoute) {
+  //   if (!token || (role !== 'ADMIN' && role !== 'SUPER_ADMIN')) {
+  //     return NextResponse.redirect(new URL('/', req.url));
+  //   }
+  // }
 
   return NextResponse.next();
 }
