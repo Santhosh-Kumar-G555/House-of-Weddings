@@ -55,6 +55,13 @@ export const { handlers, signOut, auth } = NextAuth({
         (session.user as any).role = token.role as string;
       }
       return session;
+    },
+    async redirect({ url, baseUrl }) {
+      // Allows relative callbacks
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      // Allows callbacks to the same origin
+      else if (new URL(url).origin === baseUrl) return url;
+      return baseUrl;
     }
   }
 });
