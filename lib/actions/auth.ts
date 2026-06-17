@@ -52,7 +52,7 @@ export async function resetPasswordAction(formData: FormData) {
     // 1. Validate new password strictness
     const parsedPassword = passwordSchema.safeParse(newPassword);
     if (!parsedPassword.success) {
-      return { success: false, error: parsedPassword.error.errors[0].message };
+      return { success: false, error: parsedPassword.error.issues[0].message };
     }
 
     // 2. Verify OTP exists and is valid
