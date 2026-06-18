@@ -66,8 +66,10 @@ export default function ForgotPasswordPage() {
         {step === 1 ? (
           <form key="step-1-form" onSubmit={handleRequestOtp} className="space-y-4">
             <div>
-              <label className="block text-sm font-bold text-on-surface mb-1">Email Address</label>
+              <label htmlFor="fp-email" className="block text-sm font-bold text-on-surface mb-1">Email Address</label>
               <input
+                id="fp-email"
+                aria-label="Email Address"
                 type="email"
                 required
                 value={email || ''}
@@ -87,8 +89,10 @@ export default function ForgotPasswordPage() {
         ) : (
           <form key="step-2-form" onSubmit={handleResetPassword} className="space-y-4">
             <div>
-              <label className="block text-sm font-bold text-on-surface mb-1">6-Digit Code</label>
+              <label htmlFor="fp-otp" className="block text-sm font-bold text-on-surface mb-1">6-Digit Code</label>
               <input
+                id="fp-otp"
+                aria-label="6-Digit Verification Code"
                 name="otp"
                 type="text"
                 required
@@ -98,8 +102,10 @@ export default function ForgotPasswordPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-bold text-on-surface mb-1">New Password</label>
+              <label htmlFor="fp-new-password" className="block text-sm font-bold text-on-surface mb-1">New Password</label>
               <input
+                id="fp-new-password"
+                aria-label="New Password"
                 name="newPassword"
                 type="password"
                 required

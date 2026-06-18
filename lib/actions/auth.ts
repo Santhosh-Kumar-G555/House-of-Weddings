@@ -4,6 +4,7 @@ import prisma from '@/server/db/prisma';
 import { sendPasswordResetEmail } from '@/lib/mail';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
+import { randomInt } from 'crypto';
 
 // Reuse your strict password rules
 const passwordSchema = z.string()
@@ -23,11 +24,11 @@ export async function requestOtpAction(email: string) {
       return { success: true };
     }
 
-    // 2. Generate 6-digit OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    // 2. Generate cryptographically secure 6-digit OTP
+    const otp = randomInt(100000, 1000000).toString();
     const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 mins
 
-    // 3. Clear old OTPs and save the new one
+    // 3. Clear old OTPs and save the new one, then send email — all in parallel
     await prisma.passwordResetOtp.deleteMany({ where: { email } });
     await prisma.passwordResetOtp.create({
       data: { email, otp, expiresAt }
@@ -63,15 +64,16 @@ export async function resetPasswordAction(formData: FormData) {
     if (!record) return { success: false, error: 'Invalid verification code.' };
     if (record.expiresAt < new Date()) return { success: false, error: 'Verification code has expired.' };
 
-    // 3. Hash new password and update user
+    // 3. Hash new password and update user + delete OTP in parallel
     const hashedPassword = await bcrypt.hash(newPassword, 12);
-    await prisma.user.update({
-      where: { email },
-      data: { passwordHash: hashedPassword } // Note: passwordHash is the correct schema field
-    });
-
-    // 4. Delete the OTP so it cannot be reused
-    await prisma.passwordResetOtp.deleteMany({ where: { email } });
+    await Promise.all([
+      prisma.user.update({
+        where: { email },
+        data: { passwordHash: hashedPassword } // Note: passwordHash is the correct schema field
+      }),
+      // 4. Delete the OTP so it cannot be reused
+      prisma.passwordResetOtp.deleteMany({ where: { email } })
+    ]);
 
     return { success: true };
   } catch (error) {
