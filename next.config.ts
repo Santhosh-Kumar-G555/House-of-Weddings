@@ -1,3 +1,7 @@
+import { withSentryConfig } from '@sentry/nextjs';
+import type { NextConfig } from "next";
+
+import { withSentryConfig } from '@sentry/nextjs';
 import type { NextConfig } from "next";
 
 const cspHeader = `
@@ -6,7 +10,7 @@ const cspHeader = `
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
   font-src 'self' https://fonts.gstatic.com data: https://vercel.live;
   img-src 'self' blob: data: https://res.cloudinary.com https://images.unsplash.com;
-  connect-src 'self' https://*.vercel.app https://*.neon.tech https://vercel.live wss://*.pusher.com;
+  connect-src 'self' https://*.vercel.app https://*.neon.tech https://vercel.live wss://*.pusher.com https://*.sentry.io;
   frame-src 'self' https://vercel.live;
   frame-ancestors 'none';
 `.replace(/\s{2,}/g, ' ').trim();
@@ -23,26 +27,24 @@ const nextConfig: NextConfig = {
       {
         source: '/:path*',
         headers: [
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'X-Frame-Options',
-            value: 'DENY',
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'strict-origin-when-cross-origin',
-          },
-          {
-            key: 'Content-Security-Policy',
-            value: cspHeader,
-          },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'DENY' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          { key: 'Content-Security-Policy', value: cspHeader },
         ],
       },
     ];
   },
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  org: "santhosh-tg",
+  project: "javascript-nextjs",
+  silent: !process.env.CI,
+  widenClientFileUpload: true,
+  tunnelRoute: "/monitoring", // Bypasses adblockers via Next.js rewrites
+  webpack: {
+    automaticVercelMonitors: true,
+    treeshake: { removeDebugLogging: true },
+  },
+});
