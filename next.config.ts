@@ -2,11 +2,11 @@ import type { NextConfig } from "next";
 
 const cspHeader = `
   default-src 'self';
-  script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com;
+  script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://vercel.live;
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
   font-src 'self' https://fonts.gstatic.com data:;
-  img-src 'self' blob: data: https://res.cloudinary.com;
-  connect-src 'self' https://*.vercel.app https://*.neon.tech;
+  img-src 'self' blob: data: https://res.cloudinary.com https://images.unsplash.com;
+  connect-src 'self' https://*.vercel.app https://*.neon.tech https://vercel.live;
   frame-ancestors 'none';
 `.replace(/\s{2,}/g, ' ').trim();
 
