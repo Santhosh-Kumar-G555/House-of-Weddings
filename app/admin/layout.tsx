@@ -1,7 +1,7 @@
 import { notFound, redirect } from 'next/navigation';
 import { auth } from '@/auth';
 import AdminSidebar from './AdminSidebar';
-
+import { Toaster } from 'react-hot-toast';
 export default async function AdminLayout({
   children,
 }: {
@@ -30,6 +30,7 @@ export default async function AdminLayout({
           {children}
         </main>
       </div>
+      <Toaster position="bottom-right" reverseOrder={false} />
     </div>
   );
 }

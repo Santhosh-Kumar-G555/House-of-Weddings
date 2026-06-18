@@ -8,6 +8,7 @@ import { auth } from '@/auth';
 import AddCategoryForm from './AddCategoryForm';
 import AddServiceForm from './AddServiceForm';
 import ConfirmSubmitButton from '@/components/modules/admin/ConfirmSubmitButton';
+import GeneralSettingsForm from './GeneralSettingsForm';
 
 export default async function SettingsPage({
   searchParams,
@@ -71,45 +72,7 @@ export default async function SettingsPage({
             <div className="w-full bg-surface-lowest border border-outline-variant rounded-xl p-6 shadow-sm">
               <h2 className="text-xl font-bold text-on-surface mb-6 border-b border-outline-variant pb-2">Platform Configuration</h2>
             
-            <form action={async (formData) => { 'use server'; await updateSystemSettings(formData); }} className="space-y-6">
-              
-              {/* Maintenance Mode Toggle */}
-              <div className="flex items-center justify-between p-4 bg-error-container/20 border border-error/20 rounded-lg">
-                <div>
-                  <label htmlFor="sys-maintenance" className="font-bold text-error">Maintenance Mode</label>
-                  <p className="text-xs text-on-surface-variant">Takes the public site offline.</p>
-                </div>
-                <input 
-                  id="sys-maintenance"
-                  type="checkbox" 
-                  name="maintenanceMode" 
-                  defaultChecked={settings.maintenanceMode}
-                  className="w-5 h-5 accent-error cursor-pointer"
-                />
-              </div>
-
-              {/* SEO Meta */}
-              <div>
-                <label htmlFor="sys-title" className="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-2 block">Global SEO Title</label>
-                <input 
-                  id="sys-title"
-                  type="text" name="seoTitle" defaultValue={settings.seoTitle || ''}
-                  className="w-full px-4 py-2 bg-transparent border border-outline-variant rounded-md focus:border-primary outline-none text-on-surface"
-                />
-              </div>
-              <div>
-                <label htmlFor="sys-desc" className="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-2 block">Global SEO Description</label>
-                <textarea 
-                  id="sys-desc"
-                  name="seoDescription" defaultValue={settings.seoDescription || ''} rows={3}
-                  className="w-full px-4 py-2 bg-transparent border border-outline-variant rounded-md focus:border-primary outline-none text-on-surface resize-none"
-                />
-              </div>
-
-              <button type="submit" className="w-full bg-primary text-on-primary px-6 py-3 rounded-md font-bold hover:bg-primary/90 transition-colors">
-                Save Platform Settings
-              </button>
-            </form>
+            <GeneralSettingsForm settings={settings} />
           </div>
           </div>
         )}
