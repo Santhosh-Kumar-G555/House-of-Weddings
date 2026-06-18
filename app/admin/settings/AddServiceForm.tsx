@@ -2,20 +2,27 @@
 
 import React, { useState } from 'react';
 import { upsertServiceType } from '@/server/actions/settings';
+import toast from 'react-hot-toast';
 
 export default function AddServiceForm({ categoryId }: { categoryId: string }) {
   const [error, setError] = useState<string | null>(null);
 
   async function handleAction(formData: FormData) {
     setError(null); // Clear previous errors
-    const res = await upsertServiceType(formData);
-    
-    if (res?.error) {
-      setError(res.error); // Display the new error to the user
-    } else {
-      // Clear the input on success
-      const form = document.getElementById(`form-${categoryId}`) as HTMLFormElement;
-      form?.reset();
+    try {
+      const res = await upsertServiceType(formData);
+      
+      if (res?.error) {
+        setError(res.error); // Display the new error to the user
+        toast.error('Failed to save sub-category.');
+      } else {
+        // Clear the input on success
+        const form = document.getElementById(`form-${categoryId}`) as HTMLFormElement;
+        form?.reset();
+        toast.success('Sub-category saved!');
+      }
+    } catch (err) {
+      toast.error('Failed to save sub-category.');
     }
   }
 

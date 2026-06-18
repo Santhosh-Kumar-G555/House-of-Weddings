@@ -2,19 +2,26 @@
 
 import React, { useState } from 'react';
 import { upsertCategory } from '@/server/actions/settings';
+import toast from 'react-hot-toast';
 
 export default function AddCategoryForm() {
   const [error, setError] = useState<string | null>(null);
 
   async function handleAction(formData: FormData) {
     setError(null);
-    const res = await upsertCategory(formData);
-    
-    if (res?.error) {
-      setError(res.error);
-    } else {
-      const form = document.getElementById('main-category-form') as HTMLFormElement;
-      form?.reset();
+    try {
+      const res = await upsertCategory(formData);
+      
+      if (res?.error) {
+        setError(res.error);
+        toast.error('Failed to add category.');
+      } else {
+        const form = document.getElementById('main-category-form') as HTMLFormElement;
+        form?.reset();
+        toast.success('Category added successfully!');
+      }
+    } catch (err) {
+      toast.error('Failed to add category.');
     }
   }
 
