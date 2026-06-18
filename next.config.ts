@@ -7,6 +7,7 @@ const cspHeader = `
   font-src 'self' https://fonts.gstatic.com data:;
   img-src 'self' blob: data: https://res.cloudinary.com https://images.unsplash.com;
   connect-src 'self' https://*.vercel.app https://*.neon.tech https://vercel.live;
+  frame-src 'self' https://vercel.live;
   frame-ancestors 'none';
 `.replace(/\s{2,}/g, ' ').trim();
 
