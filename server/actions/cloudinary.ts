@@ -40,3 +40,36 @@ export async function getSignature() {
     return { error: 'Failed to generate upload signature' };
   }
 }
+
+export async function uploadPodcastVideo(formData: FormData) {
+  const session = await auth();
+  if (!session?.user) {
+    return { error: 'Unauthorized' };
+  }
+
+  try {
+    const file = formData.get('file') as File;
+    if (!file) return { error: 'No file provided' };
+
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    return new Promise<{ secureUrl?: string; error?: string }>((resolve) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        { resource_type: 'video', folder: 'podcasts' },
+        (error, result) => {
+          if (error) {
+            console.error('Cloudinary video upload error:', error);
+            resolve({ error: 'Video upload failed' });
+          } else {
+            resolve({ secureUrl: result?.secure_url });
+          }
+        }
+      );
+      uploadStream.end(buffer);
+    });
+  } catch (error) {
+    console.error('Upload action error:', error);
+    return { error: 'Internal server error during video upload' };
+  }
+}

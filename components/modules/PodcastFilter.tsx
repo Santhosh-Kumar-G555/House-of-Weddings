@@ -116,7 +116,7 @@ function useDebouncedCallback(callback: (...args: any[]) => void, delay: number)
   );
 }
 
-export default function PodcastFilter() {
+export default function PodcastFilter({ options }: { options?: { categories: string[], hosts: string[], durations: string[] } }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -128,11 +128,11 @@ export default function PodcastFilter() {
   const [duration, setDuration] = useState(searchParams.get('duration') || '');
   const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'Newest');
 
-  // Hardcoded options for the podcast page demo
-  const categories = ['Budgeting', 'Venues', 'Interviews', 'Photography', 'Catering', 'Planning'];
-  const hosts = ['Julianne West', 'Marcus Reed', 'Elena Lopez', 'Guest Experts'];
-  const durations = ['Under 30 mins', '30-45 mins', '45-60 mins', 'Over 60 mins'];
-  const sortOptions = ['Newest', 'Oldest', 'Most Popular'];
+  // Dynamic options from DB, with fallback to empty array
+  const categories = options?.categories || [];
+  const hosts = options?.hosts || [];
+  const durations = options?.durations || [];
+  const sortOptions = ['Newest', 'Oldest'];
 
   // Sync to URL
   const updateUrl = useDebouncedCallback((q: string, cat: string, h: string, dur: string, sort: string) => {

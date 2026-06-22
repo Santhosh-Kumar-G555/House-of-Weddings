@@ -15,6 +15,11 @@ const cspHeader = `
 `.replace(/\s{2,}/g, ' ').trim();
 
 const nextConfig: NextConfig = {
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '200mb',
+    },
+  },
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: '**' },

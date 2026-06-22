@@ -12,6 +12,7 @@ export default function AdminSidebar({ role }: { role: string }) {
     { name: 'Dashboard', path: '/admin/dashboard', icon: 'dashboard' },
     { name: 'User Management', path: '/admin/users', icon: 'group' },
     { name: 'Vendor Directory', path: '/admin/vendors', icon: 'storefront' },
+    { name: 'Podcasts', path: '/admin/podcasts', icon: 'podcasts' },
     { name: 'Appointments', path: '/admin/appointments', icon: 'calendar_today' },
     { name: 'System Settings', path: '/admin/settings', icon: 'settings' },
   ];

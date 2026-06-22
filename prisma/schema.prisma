@@ -217,3 +217,19 @@ model ServiceType {
 
   @@unique([name, categoryId]) // Prevent duplicate sub-categories in the same parent
 }
+
+// --- PODCASTS ---
+model Podcast {
+  id           String   @id @default(cuid())
+  title        String
+  description  String   @default("")
+  category     String   @default("General")
+  mediaSource  String   // 'upload' | 'external_link'
+  mediaUrl     String
+  thumbnailUrl String?
+  host         String   @default("")
+  duration     String   @default("")
+  status       String   @default("draft") // 'draft' | 'published'
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
