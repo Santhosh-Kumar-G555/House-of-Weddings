@@ -50,8 +50,13 @@ export default async function VendorsPage({
   const vendors = await prisma.vendor.findMany({
     where: whereClause,
     include: { portfolio: true },
-    orderBy: { createdAt: 'desc' }
   });
+
+  // Fisher-Yates shuffle to randomize the vendor order on every refresh
+  for (let i = vendors.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [vendors[i], vendors[j]] = [vendors[j], vendors[i]];
+  }
 
   // Map to VendorListing format so VendorCard accepts it
   const mappedVendors: any[] = vendors.map(v => ({
