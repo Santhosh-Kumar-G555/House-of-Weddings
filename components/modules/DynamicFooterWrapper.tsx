@@ -12,7 +12,7 @@ export default function DynamicFooterWrapper({ children }: { children: React.Rea
     paddingClass = 'md:pl-64'; // 256px
   } else if (pathname.startsWith('/vendor/') || pathname === '/vendor') {
     paddingClass = 'md:pl-64'; // 256px
-  } else if (pathname.startsWith('/profile') || pathname.startsWith('/podcasts')) {
+  } else if (pathname.startsWith('/profile')) {
     paddingClass = 'md:pl-[280px]'; // 280px
   }
 
