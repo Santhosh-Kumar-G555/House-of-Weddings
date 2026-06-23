@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 /* ─────────────────────────────────────────────────────────────────
    PODCAST BANNER — Static Server Component
@@ -20,31 +21,31 @@ export default function PodcastSlider() {
         </div>
 
         {/* Center — text */}
-        <div className="flex-1 text-center">
-          <h2
-            className="uppercase"
-            style={{
-              fontFamily:    "var(--font-headline)",
-              fontWeight:    700,
-              fontSize:      "clamp(1rem, 2.5vw, 1.5rem)",
-              letterSpacing: "-0.01em",
-              color:         "var(--color-on-surface)",
-              lineHeight:    1.2,
-            }}
-          >
-            WHAT&apos;S MINCHING IN BENGALURU ?!!!
-          </h2>
-          <p
-            className="mt-2 uppercase tracking-widest"
-            style={{
-              fontFamily: "var(--font-label)",
-              fontSize:   "var(--text-label-md)",
-              color:      "var(--color-on-surface-variant)",
-            }}
-          >
-            EXCLUSIVE VENDOR PODCASTS COMING SOON!!!
-          </p>
-        </div>
+        <Link href="/podcasts" className="flex-1 text-center cursor-pointer block group">
+          <div className="animate-stretch-custom">
+            <h2
+              className="uppercase bg-gradient-to-r from-pink-500 to-cyan-400 bg-clip-text text-transparent"
+              style={{
+                fontFamily: "var(--font-headline)",
+                fontWeight: 700,
+                fontSize: "clamp(1rem, 2.5vw, 1.5rem)",
+                letterSpacing: "-0.01em",
+                lineHeight: 1.2,
+              }}
+            >
+              WHAT&apos;S MINCHING IN BENGALURU ?!!!
+            </h2>
+            <p
+              className="mt-2 uppercase tracking-widest text-on-surface-variant"
+              style={{
+                fontFamily: "var(--font-label)",
+                fontSize: "var(--text-label-md)",
+              }}
+            >
+              EXCLUSIVE VENDOR PODCASTS COMING SOON!!!
+            </p>
+          </div>
+        </Link>
 
         {/* Right — host image */}
         <div className="flex flex-col items-center gap-2 flex-shrink-0">

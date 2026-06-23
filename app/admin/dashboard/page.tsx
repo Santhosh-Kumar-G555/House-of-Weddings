@@ -1,6 +1,7 @@
 import React from 'react';
 import prisma from '@/server/db/prisma';
 import { EngagementLineChart, MiniBarChart } from '@/components/modules/admin/AdminCharts';
+import DownloadReportModal from './components/DownloadReportModal';
 
 // Helper to group records by day for the last 7 days: 100% authentic data, no mocking
 function generateWeeklyTrend(records: { createdAt: Date }[]) {
@@ -66,10 +67,7 @@ export default async function AdminDashboard() {
 
         {/* Action Button */}
         <div className="flex-shrink-0 w-full md:w-auto">
-          <button className="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-surface-variant text-on-surface font-bold rounded-lg hover:bg-surface-variant/80 transition-colors" type="button">
-            <span className="material-symbols-outlined text-[20px]">download</span>
-            Download Report
-          </button>
+          <DownloadReportModal />
         </div>
         
       </div>

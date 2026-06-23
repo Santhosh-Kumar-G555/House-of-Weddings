@@ -15,21 +15,33 @@ export async function getPodcasts() {
   }
 }
 
+export async function getVendorsForPodcast() {
+  try {
+    const vendors = await prisma.vendor.findMany({
+      select: { id: true, name: true, category: true },
+      orderBy: { name: 'asc' }
+    });
+    return { vendors };
+  } catch (error) {
+    console.error('Error fetching vendors for podcast:', error);
+    return { error: 'Failed to fetch vendors' };
+  }
+}
+
 export async function getPodcastFilterOptions() {
   try {
     const podcastsRaw = await prisma.podcast.findMany({
-      select: { category: true, host: true, duration: true },
+      select: { category: true, guestName: true },
       where: { status: 'published' }
     });
 
     return {
       categories: Array.from(new Set(podcastsRaw.map(p => p.category).filter(Boolean))),
-      hosts: Array.from(new Set(podcastsRaw.map(p => p.host).filter(Boolean))),
-      durations: Array.from(new Set(podcastsRaw.map(p => p.duration).filter(Boolean))),
+      guests: Array.from(new Set(podcastsRaw.map(p => p.guestName).filter(Boolean))),
     };
   } catch (error) {
     console.error('Error fetching filter options:', error);
-    return { categories: [], hosts: [], durations: [] };
+    return { categories: [], guests: [] };
   }
 }
 
@@ -52,13 +64,17 @@ export async function createPodcast(data: {
   mediaSource: string;
   mediaUrl: string;
   thumbnailUrl?: string;
-  host: string;
+  guestId?: string;
+  guestName?: string;
   duration: string;
   status: string;
 }) {
   try {
     const newPodcast = await prisma.podcast.create({
-      data,
+      data: {
+        ...data,
+        host: "Sujay Naidu", // Hardcoded
+      },
     });
     revalidatePath('/admin/podcasts');
     revalidatePath('/podcasts');
@@ -73,7 +89,10 @@ export async function updatePodcast(id: string, data: any) {
   try {
     const updated = await prisma.podcast.update({
       where: { id },
-      data,
+      data: {
+        ...data,
+        host: "Sujay Naidu", // Hardcoded
+      },
     });
     revalidatePath('/admin/podcasts');
     revalidatePath('/podcasts');

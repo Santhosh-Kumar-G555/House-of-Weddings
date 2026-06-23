@@ -465,3 +465,13 @@
     transform: scale(1) translateY(0);
   }
 }
+
+@keyframes custom-stretch {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.animate-stretch-custom {
+  animation: custom-stretch 3s ease-in-out infinite;
+  display: inline-block; /* Required for transform scale to work properly */
+}

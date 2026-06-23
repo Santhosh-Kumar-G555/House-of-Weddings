@@ -116,7 +116,7 @@ function useDebouncedCallback(callback: (...args: any[]) => void, delay: number)
   );
 }
 
-export default function PodcastFilter({ options }: { options?: { categories: string[], hosts: string[], durations: string[] } }) {
+export default function PodcastFilter({ options }: { options?: { categories: string[], guests: string[] } }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -124,23 +124,20 @@ export default function PodcastFilter({ options }: { options?: { categories: str
   // Local State
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
   const [category, setCategory] = useState(searchParams.get('category') || '');
-  const [host, setHost] = useState(searchParams.get('host') || '');
-  const [duration, setDuration] = useState(searchParams.get('duration') || '');
+  const [guest, setGuest] = useState(searchParams.get('guest') || '');
   const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'Newest');
 
   // Dynamic options from DB, with fallback to empty array
   const categories = options?.categories || [];
-  const hosts = options?.hosts || [];
-  const durations = options?.durations || [];
+  const guests = options?.guests || [];
   const sortOptions = ['Newest', 'Oldest'];
 
   // Sync to URL
-  const updateUrl = useDebouncedCallback((q: string, cat: string, h: string, dur: string, sort: string) => {
+  const updateUrl = useDebouncedCallback((q: string, cat: string, g: string, sort: string) => {
     const params = new URLSearchParams();
     if (q) params.set('q', q);
     if (cat) params.set('category', cat);
-    if (h) params.set('host', h);
-    if (dur) params.set('duration', dur);
+    if (g) params.set('guest', g);
     if (sort && sort !== 'Newest') params.set('sort', sort);
 
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
@@ -149,15 +146,14 @@ export default function PodcastFilter({ options }: { options?: { categories: str
   const handleClear = () => {
     setSearchQuery('');
     setCategory('');
-    setHost('');
-    setDuration('');
+    setGuest('');
     setSortBy('Newest');
     router.push(pathname, { scroll: false });
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
-    updateUrl(e.target.value, category, host, duration, sortBy);
+    updateUrl(e.target.value, category, guest, sortBy);
   };
 
   return (
@@ -190,39 +186,41 @@ export default function PodcastFilter({ options }: { options?: { categories: str
             label="Episode Category"
             placeholder="Type or select..."
             value={category}
-            onChange={(val: string) => { setCategory(val); updateUrl(searchQuery, val, host, duration, sortBy); }}
+            onChange={(val: string) => { setCategory(val); updateUrl(searchQuery, val, guest, sortBy); }}
             options={categories}
           />
         </div>
 
         <div className="flex-1 min-w-[150px] snap-start">
           <Combobox 
-            label="Host/Guest"
+            label="Guest"
             placeholder="Type or select..."
-            value={host}
-            onChange={(val: string) => { setHost(val); updateUrl(searchQuery, category, val, duration, sortBy); }}
-            options={hosts}
+            value={guest}
+            onChange={(val: string) => { setGuest(val); updateUrl(searchQuery, category, val, sortBy); }}
+            options={guests}
           />
         </div>
 
-        <div className="flex-1 min-w-[150px] snap-start">
-          <Combobox 
-            label="Duration"
-            placeholder="Type or select..."
-            value={duration}
-            onChange={(val: string) => { setDuration(val); updateUrl(searchQuery, category, host, val, sortBy); }}
-            options={durations}
-          />
-        </div>
-
-        <div className="flex-1 min-w-[150px] snap-start">
-          <Combobox 
-            label="Sort by"
-            placeholder="Select..."
-            value={sortBy}
-            onChange={(val: string) => { setSortBy(val); updateUrl(searchQuery, category, host, duration, val); }}
-            options={sortOptions}
-          />
+        <div className="flex-1 min-w-[150px] snap-start flex flex-col gap-2">
+          <label className="font-label-sm font-bold text-on-surface-variant">Sort by</label>
+          <div className="relative">
+            <select
+              value={sortBy}
+              onChange={(e) => {
+                const val = e.target.value;
+                setSortBy(val);
+                updateUrl(searchQuery, category, guest, val);
+              }}
+              className="w-full px-4 py-2 bg-transparent border border-outline-variant rounded-md focus:border-primary outline-none transition-colors appearance-none cursor-pointer"
+            >
+              {sortOptions.map(opt => (
+                <option key={opt} value={opt} className="bg-surface-container-lowest text-on-surface">
+                  {opt}
+                </option>
+              ))}
+            </select>
+            <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+          </div>
         </div>
 
         <div className="flex-shrink-0 snap-end">

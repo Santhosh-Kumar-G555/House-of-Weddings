@@ -42,8 +42,7 @@ export default function LightboxGallery({ images, currentIndex, isOpen, onClose,
     // react-doctor-disable-next-line prefer-tag-over-role, react-doctor/prefer-tag-over-role
     <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/95 p-4" onClick={onClose} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { const handler = onClose; if (typeof handler === 'function') (handler as any)(e); } }} tabIndex={0} role="button" aria-label="Close Gallery">
       {/* Close Button */}
-      <button onClick={onClose} className="absolute top-6 right-6 text-white hover:text-gray-300 z-50 cursor-pointer flex items-center gap-2 bg-black/50 px-4 py-2 rounded-full border border-white/20 shadow-lg backdrop-blur-sm transition-colors hover:bg-black/70" type="button">
-        <span className="font-label-md font-bold uppercase tracking-wider text-sm">Go Back</span>
+      <button onClick={onClose} className="absolute top-6 right-6 text-white hover:text-gray-300 z-50 cursor-pointer flex items-center justify-center bg-black/50 w-12 h-12 rounded-full border border-white/20 shadow-lg backdrop-blur-sm transition-colors hover:bg-black/70" type="button" aria-label="Close Gallery">
         <span className="material-symbols-outlined text-2xl">close</span>
       </button>
 
@@ -74,10 +73,7 @@ export default function LightboxGallery({ images, currentIndex, isOpen, onClose,
         </button>
       )}
 
-      {/* Counter */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white font-label-md bg-black/50 px-4 py-2 rounded-full pointer-events-none">
-        {currentIndex + 1} / {images.length}
-      </div>
+
     </div>,
     document.body
   );

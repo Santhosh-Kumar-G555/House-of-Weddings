@@ -88,6 +88,7 @@ model Vendor {
   appointments  Appointment[]
   comparedBy    Compare[]
   portfolio   Portfolio?
+  podcasts    Podcast[]
 }
 
 // 4. The Deep Portfolio Data
@@ -227,9 +228,13 @@ model Podcast {
   mediaSource  String   // 'upload' | 'external_link'
   mediaUrl     String
   thumbnailUrl String?
-  host         String   @default("")
+  host         String   @default("Sujay Naidu")
+  guestId      String?
+  guestName    String?
   duration     String   @default("")
   status       String   @default("draft") // 'draft' | 'published'
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  guest        Vendor?  @relation(fields: [guestId], references: [id])
 }

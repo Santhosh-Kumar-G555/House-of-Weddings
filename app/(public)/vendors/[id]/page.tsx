@@ -4,7 +4,6 @@ import prisma from "@/server/db/prisma";
 import { auth } from '@/auth';
 import FavouriteButton from '@/components/modules/FavouriteButton';
 import ShortlistButton from '@/components/modules/ShortlistButton';
-import CompareButton from '@/components/modules/CompareButton';
 import PublicPortfolioGrid from '@/components/modules/PublicPortfolioGrid';
 import BookingButton from '@/components/modules/BookingButton';
 import FallbackImage from '@/components/ui/FallbackImage';
@@ -56,7 +55,6 @@ export default async function VendorProfile({ params }: { params: Promise<{ id: 
   // Check if the current user has favorited this vendor
   let isFavorited = false;
   let isShortlisted = false;
-  let isCompared = false;
   if (session?.user?.id) {
     const fav = await prisma.favourite.findUnique({
       where: {
@@ -77,16 +75,6 @@ export default async function VendorProfile({ params }: { params: Promise<{ id: 
       }
     });
     isShortlisted = !!short;
-
-    const comp = await prisma.compare.findUnique({
-      where: {
-        userId_vendorId: {
-          userId: session.user.id,
-          vendorId: vendor.id
-        }
-      }
-    });
-    isCompared = !!comp;
   }
 
   return (
@@ -98,13 +86,15 @@ export default async function VendorProfile({ params }: { params: Promise<{ id: 
         <div className="bg-surface-container-lowest border border-outline-variant rounded flex flex-col items-center text-center overflow-hidden">
           
           {/* Cover Image Block */}
-          <div className="w-full h-32 md:h-40 bg-surface-variant relative border-b border-outline-variant">
-            <FallbackImage 
-              src={getValidImage(vendor.coverImage) || '/default-cover.jpg'} 
-              alt={`${vendor.name} cover`} 
-              className="w-full h-full object-cover"
-              fallbackSrc="https://placehold.co/1200x400/e2e8f0/64748b?text=No+Cover"
-            />
+          <div className="w-full h-32 md:h-40 bg-surface-container-high relative border-b border-outline-variant">
+            {getValidImage(vendor.coverImage) ? (
+              <FallbackImage 
+                src={getValidImage(vendor.coverImage)!} 
+                alt={`${vendor.name} cover`} 
+                className="w-full h-full object-cover"
+                fallbackSrc="https://placehold.co/1200x400/e2e8f0/64748b?text=No+Cover"
+              />
+            ) : null}
           </div>
 
           <div className="w-48 h-48 rounded-full overflow-hidden mb-6 border-4 border-surface-container-lowest -mt-24 relative z-10 bg-surface-variant">
@@ -147,11 +137,6 @@ export default async function VendorProfile({ params }: { params: Promise<{ id: 
             <ShortlistButton
               vendorId={vendor.id}
               initialIsShortlisted={isShortlisted}
-              isLoggedIn={!!session?.user}
-            />
-            <CompareButton
-              vendorId={vendor.id}
-              initialIsCompared={isCompared}
               isLoggedIn={!!session?.user}
             />
           </div>

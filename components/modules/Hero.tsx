@@ -35,13 +35,6 @@ const LOCATIONS = [
   { value: "goa",        label: "Goa" },
 ] as const;
 
-const TRUST_BADGES = [
-  { icon: "🏆", label: "12,000+ Vendors" },
-  { icon: "⭐", label: "4.8 Avg Rating" },
-  { icon: "✅", label: "100% Verified" },
-  { icon: "💍", label: "50,000+ Weddings" },
-];
-
 const POPULAR = ["Wedding Venues", "Photographers", "Bridal Makeup", "Mehendi Artists", "Decorators"];
 
 /* ─────────────────────────────────────────────────────────────────
@@ -292,20 +285,10 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* ── Trust badges ────────────────────────────── */}
-      <div className="w-full max-w-[800px] mx-auto flex flex-wrap justify-center gap-6 mt-8">
-        {TRUST_BADGES.map((b) => (
-          <div key={b.label} className="flex items-center gap-2">
-            <span className="text-base" aria-hidden="true">{b.icon}</span>
-            <span
-              className="text-xs font-medium"
-              style={{ color: "var(--color-on-surface-variant)", fontFamily: "var(--font-body)" }}
-            >
-              {b.label}
-            </span>
-          </div>
-        ))}
-      </div>
+      {/* ── SEO Catchphrase ────────────────────────────── */}
+      <p className="text-body-sm text-on-surface-variant mt-6 text-center font-medium tracking-wide">
+        Your trusted guide to top-rated wedding professionals and exclusive planning inspiration.
+      </p>
 
     </section>
   );
