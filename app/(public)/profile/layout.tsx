@@ -16,9 +16,9 @@ export default async function ProfileLayout({ children }: { children: React.Reac
   }
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-surface-container-low w-full">
+    <div className="w-full min-h-screen flex flex-col md:flex-row bg-surface-container-low">
       <ProfileNavigation />
-      <section className="flex-1 px-6 md:px-12 py-10 overflow-y-auto md:ml-[280px]">
+      <section className="flex-1 w-full min-w-[0px] px-6 md:px-12 py-10 overflow-y-auto md:ml-[280px]">
         {children}
       </section>
     </div>

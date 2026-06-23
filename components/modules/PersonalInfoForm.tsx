@@ -56,7 +56,7 @@ export default function PersonalInfoForm({ user }: { user: UserProps }) {
   };
 
   return (
-    <div className="bg-surface-container-lowest border border-outline-variant rounded p-8 flex flex-col relative h-full">
+    <div className="bg-surface-container-lowest border border-outline-variant rounded p-8 flex flex-col relative h-full" style={{ width: '100%', minWidth: '100%' }}>
       <h2 className="font-headline-md text-xl font-bold text-primary mb-6 border-b border-outline-variant pb-4 flex justify-between items-center">
         Personal Info
         {message.text && (

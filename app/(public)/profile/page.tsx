@@ -29,18 +29,13 @@ export default async function ProfilePage() {
     <>
       <h1 className="font-headline-xl text-4xl font-bold text-primary mb-8 tracking-tight">User Details</h1>
 
-      {/* Top Grid: Personal Details & Plan Details */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-        
-        {/* Card 1: Personal Details */}
-        <div className="lg:col-span-2 max-w-2xl">
-          <PersonalInfoForm user={{ 
-            email: dbUser?.email || '', 
-            fullName: dbUser?.fullName || null, 
-            phone: dbUser?.phone || null,
-            image: dbUser?.image || null
-          }} />
-        </div>
+      <div className="mb-8" style={{ width: '100%', minWidth: '100%', maxWidth: '48rem' }}>
+        <PersonalInfoForm user={{ 
+          email: dbUser?.email || '', 
+          fullName: dbUser?.fullName || null, 
+          phone: dbUser?.phone || null,
+          image: dbUser?.image || null
+        }} />
       </div>
 
       {/* Bottom Full-Width Card: Event Management */}
