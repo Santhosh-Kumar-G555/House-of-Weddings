@@ -36,8 +36,8 @@ export async function getPodcastFilterOptions() {
     });
 
     return {
-      categories: Array.from(new Set(podcastsRaw.map(p => p.category).filter(Boolean))),
-      guests: Array.from(new Set(podcastsRaw.map(p => p.guestName).filter(Boolean))),
+      categories: Array.from(new Set(podcastsRaw.map(p => p.category).filter(Boolean))) as string[],
+      guests: Array.from(new Set(podcastsRaw.map(p => p.guestName).filter(Boolean))) as string[],
     };
   } catch (error) {
     console.error('Error fetching filter options:', error);
