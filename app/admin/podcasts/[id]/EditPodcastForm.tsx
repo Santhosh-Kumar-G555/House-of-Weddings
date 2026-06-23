@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { updatePodcast } from '@/server/actions/podcasts';
+import { updatePodcast, getVendorsForPodcast } from '@/server/actions/podcasts';
 import { toast } from 'react-hot-toast';
 
 type Podcast = {
@@ -13,7 +13,8 @@ type Podcast = {
   mediaSource: string;
   mediaUrl: string;
   thumbnailUrl: string | null;
-  host: string;
+  guestId?: string | null;
+  guestName?: string | null;
   duration: string;
   status: string;
 };
@@ -24,7 +25,38 @@ export default function EditPodcastForm({ podcast }: { podcast: Podcast }) {
   const [mediaSource, setMediaSource] = useState<'upload' | 'external_link'>(
     podcast.mediaSource === 'upload' ? 'upload' : 'external_link'
   );
+  const [thumbnailSource, setThumbnailSource] = useState<'upload' | 'external_link'>('external_link');
   const [uploadProgress, setUploadProgress] = useState(false);
+  const [thumbUploadProgress, setThumbUploadProgress] = useState(false);
+  const [vendors, setVendors] = useState<{id: string, name: string}[]>([]);
+  const [guestQuery, setGuestQuery] = useState(podcast.guestName || '');
+  const [guestId, setGuestId] = useState(podcast.guestId || '');
+  const [guestName, setGuestName] = useState(podcast.guestName || '');
+  const [isGuestOpen, setIsGuestOpen] = useState(false);
+  const guestRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    getVendorsForPodcast().then(res => {
+      if (res.vendors) setVendors(res.vendors);
+    });
+
+    function handleClickOutside(event: MouseEvent) {
+      if (guestRef.current && !guestRef.current.contains(event.target as Node)) {
+        setIsGuestOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const filteredGuests = vendors.filter(v => v.name.toLowerCase().includes(guestQuery.toLowerCase()));
+
+  const handleGuestSelect = (id: string, name: string) => {
+    setGuestId(id);
+    setGuestName(name);
+    setGuestQuery(name);
+    setIsGuestOpen(false);
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -73,9 +105,49 @@ export default function EditPodcastForm({ podcast }: { podcast: Podcast }) {
           }
           mediaUrl = uploadResult.secure_url;
         }
-      } else {
         if (externalUrl) {
           mediaUrl = externalUrl;
+        }
+      }
+
+      let thumbnailUrl = formData.get('externalThumbnailUrl') as string || podcast.thumbnailUrl || '';
+      
+      if (thumbnailSource === 'upload') {
+        const thumbFile = formData.get('thumbnailFile') as File;
+        if (thumbFile && thumbFile.size > 0) {
+          const MAX_THUMB_SIZE = 5 * 1024 * 1024; // 5MB
+          if (thumbFile.size > MAX_THUMB_SIZE) {
+            toast.error('Thumbnail size limit is 5MB.');
+            setIsSubmitting(false);
+            return;
+          }
+
+          setThumbUploadProgress(true);
+          const localThumbData = new FormData();
+          localThumbData.append('file', thumbFile);
+
+          try {
+            const thumbRes = await fetch('/api/upload', {
+              method: 'POST',
+              body: localThumbData,
+            });
+            const thumbResult = await thumbRes.json();
+            
+            if (!thumbRes.ok || !thumbResult.secure_url) {
+              toast.error(thumbResult.error || 'Failed to upload thumbnail');
+              setIsSubmitting(false);
+              setThumbUploadProgress(false);
+              return;
+            }
+            thumbnailUrl = thumbResult.secure_url;
+          } catch (e) {
+            console.error("Thumbnail upload error:", e);
+            toast.error("Network error during thumbnail upload.");
+            setIsSubmitting(false);
+            setThumbUploadProgress(false);
+            return;
+          }
+          setThumbUploadProgress(false);
         }
       }
 
@@ -91,8 +163,9 @@ export default function EditPodcastForm({ podcast }: { podcast: Podcast }) {
         category: formData.get('category') as string,
         mediaSource,
         mediaUrl,
-        thumbnailUrl: formData.get('thumbnailUrl') as string,
-        host: formData.get('host') as string,
+        thumbnailUrl,
+        guestId: guestId || undefined,
+        guestName: guestName || undefined,
         duration: formData.get('duration') as string,
         status: formData.get('status') as string,
       });
@@ -135,9 +208,33 @@ export default function EditPodcastForm({ podcast }: { podcast: Podcast }) {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-2">
-            <label className="text-sm font-bold text-on-surface">Host</label>
-            <input required type="text" name="host" defaultValue={podcast.host} className="w-full px-4 py-2 border border-outline-variant rounded-md bg-transparent" placeholder="e.g. Julianne West" />
+          <div className="space-y-2 relative" ref={guestRef}>
+            <label className="text-sm font-bold text-on-surface">Guest (Vendor)</label>
+            <input 
+              type="text" 
+              value={guestQuery}
+              onChange={(e) => {
+                setGuestQuery(e.target.value);
+                if (!e.target.value) { setGuestId(''); setGuestName(''); }
+                setIsGuestOpen(true);
+              }}
+              onFocus={() => setIsGuestOpen(true)}
+              className="w-full px-4 py-2 border border-outline-variant rounded-md bg-transparent" 
+              placeholder="Search vendor..." 
+            />
+            {isGuestOpen && filteredGuests.length > 0 && (
+              <ul className="absolute z-10 w-full bg-surface-container-lowest border border-outline-variant mt-1 rounded-md max-h-48 overflow-y-auto shadow-md">
+                {filteredGuests.map(v => (
+                  <li 
+                    key={v.id} 
+                    className="px-4 py-2 hover:bg-surface-variant cursor-pointer text-sm"
+                    onClick={() => handleGuestSelect(v.id, v.name)}
+                  >
+                    {v.name}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
           <div className="space-y-2">
             <label className="text-sm font-bold text-on-surface">Duration</label>
@@ -150,9 +247,49 @@ export default function EditPodcastForm({ podcast }: { podcast: Podcast }) {
           <textarea required name="description" defaultValue={podcast.description} rows={4} className="w-full px-4 py-2 border border-outline-variant rounded-md bg-transparent" placeholder="Episode summary..." />
         </div>
 
-        <div className="space-y-2">
-          <label className="text-sm font-bold text-on-surface">Thumbnail Image URL</label>
-          <input type="url" name="thumbnailUrl" defaultValue={podcast.thumbnailUrl || ''} className="w-full px-4 py-2 border border-outline-variant rounded-md bg-transparent" placeholder="https://..." />
+        <div className="pt-4 border-t border-outline-variant">
+          <label className="text-sm font-bold text-on-surface mb-4 block">Thumbnail Image Source</label>
+          
+          <div className="flex items-center gap-6 mb-6">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input 
+                type="radio" 
+                name="thumbnailSourceSelect" 
+                value="upload" 
+                checked={thumbnailSource === 'upload'} 
+                onChange={() => setThumbnailSource('upload')} 
+                className="w-4 h-4 text-primary"
+              />
+              <span>Upload Local Image</span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input 
+                type="radio" 
+                name="thumbnailSourceSelect" 
+                value="external_link" 
+                checked={thumbnailSource === 'external_link'} 
+                onChange={() => setThumbnailSource('external_link')} 
+                className="w-4 h-4 text-primary"
+              />
+              <span>Use External Link</span>
+            </label>
+          </div>
+
+          {thumbnailSource === 'upload' ? (
+            <div className="space-y-2">
+              <label className="text-sm font-bold text-on-surface">Replace Image File (Optional)</label>
+              <div className="border-2 border-dashed border-outline-variant rounded-xl p-8 text-center bg-surface-container-lowest">
+                <input type="file" name="thumbnailFile" accept="image/*" className="mx-auto block" />
+                <p className="text-xs text-on-surface-variant mt-2">Leave empty to keep the existing thumbnail.</p>
+              </div>
+              {thumbUploadProgress && <p className="text-sm text-primary font-bold mt-2 animate-pulse">Uploading thumbnail... Please wait.</p>}
+            </div>
+          ) : (
+            <div className="space-y-2">
+              <label className="text-sm font-bold text-on-surface">External Thumbnail URL</label>
+              <input type="url" name="externalThumbnailUrl" defaultValue={podcast.thumbnailUrl || ''} className="w-full px-4 py-2 border border-outline-variant rounded-md bg-transparent" placeholder="https://..." />
+            </div>
+          )}
         </div>
 
         <div className="pt-4 border-t border-outline-variant">
