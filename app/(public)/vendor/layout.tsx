@@ -41,6 +41,9 @@ export default async function VendorLayout({ children }: { children: React.React
           <Link href="/vendor/portfolio" className="px-4 py-3 rounded font-label-md hover:bg-surface-variant transition-colors text-on-surface flex items-center gap-3">
             <span className="material-symbols-outlined">collections_bookmark</span> Portfolio
           </Link>
+          <Link href="/vendor/subscription" className="px-4 py-3 rounded font-label-md hover:bg-surface-variant transition-colors text-on-surface flex items-center gap-3">
+            <span className="material-symbols-outlined">payments</span> Billing & Plans
+          </Link>
         </nav>
 
         {/* Anchored Footer */}

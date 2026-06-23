@@ -78,6 +78,8 @@ model Vendor {
   citiesCount     Int      @default(0)
   countriesCount  Int      @default(0)
 
+  subscriptionPlan String   @default("basic")
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
