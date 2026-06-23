@@ -9,7 +9,7 @@ const cspHeader = `
   font-src 'self' https://fonts.gstatic.com data: https://vercel.live;
   img-src 'self' blob: data: https://* http://*;
   media-src 'self' https://res.cloudinary.com;
-  connect-src 'self' https://*.vercel.app https://*.neon.tech https://vercel.live wss://*.pusher.com https://*.sentry.io;
+  connect-src 'self' https://*.vercel.app https://*.neon.tech https://vercel.live wss://*.pusher.com https://*.sentry.io https://api.cloudinary.com;
   worker-src 'self' blob:;
   frame-src 'self' https://vercel.live https://www.youtube.com https://youtube.com;
   frame-ancestors 'none';
